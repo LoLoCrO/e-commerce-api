@@ -18,6 +18,7 @@ export class AuthService {
 
         const existingEmail = await this.prisma.user.findUnique({ where: { email } });
         const existingUsername = await this.prisma.user.findUnique({ where: { username } });
+
         if (existingEmail) {
             throw new ConflictException('Email already in use');
         } else if (existingUsername) {
@@ -36,15 +37,15 @@ export class AuthService {
         return { user: newUser, token };
     }
 
-    async registerViaAuth0(externalUserDto: { email: string }) {
-        const { email } = externalUserDto;
+    async registerViaAuth0(externalUserDto: { email: string, provider: string }): Promise<any> {
+        const { email, provider } = externalUserDto;
 
         const response = await firstValueFrom(
             this.httpService.post(
                 `https://${process.env.AUTH0_DOMAIN}/api/v2/users`,
                 {
                     email,
-                    connection: 'google-oauth2', // TODO: specify the provider
+                    connection: provider, // TODO: specify the providers ('google-oauth2' and others)
                 },
                 {
                     headers: {

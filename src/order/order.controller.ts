@@ -3,12 +3,7 @@ import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {
-
-    //
-    // TODO: Add cart items to order for visibility
-    //
-
-    constructor(private readonly orderService: OrderService) {}
+    constructor(private readonly orderService: OrderService) { }
 
     @Get('all')
     async getAllOrders(
@@ -44,15 +39,23 @@ export class OrderController {
 
     @Post('update')
     async updateOrder(
-        @Body() orderDto: { orderId: number, userId: number }
-    ): Promise<any> {
-        const { orderId, userId } = orderDto;
-
-        if (!orderId || !userId) {
+        @Body() orderDto: {
+            orderId: number,
+            userId?: number,
+            status?: string,
+            totalPrice?: number,
+            paymentId?: string,
+        }): Promise<any> {
+        if (!orderDto.orderId) {
             return new BadRequestException('Invalid parameters');
         }
 
-        return await this.orderService.update(orderId, { userId });
+        const keys = Object.keys(orderDto).filter(key => key !== 'orderId');
+        if (keys.length === 0) {
+            throw new BadRequestException('No properties to update');
+        }
+
+        return await this.orderService.update(orderDto.orderId, orderDto);
     }
 
     @Post('delete')

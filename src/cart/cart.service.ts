@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -133,32 +133,64 @@ export class CartService {
 
     async checkoutCart(cartId: number): Promise<any> {
         return await this.prismaService.$transaction(async (prisma) => {
+            const cart = await prisma.cart.findUnique({ where: { id: cartId } });
             const cartItems = await prisma.cartItem.findMany({
                 where: { cartId },
                 include: { product: true },
             });
 
+            if (!cart) {
+                throw new Error('Cart not found');
+            }
+
+            if (!cart.userId) {
+                throw new Error('Cart does not have a user');
+            }
+
+            if (cartItems.length === 0) {
+                throw new Error('Cart is empty');
+            }
+
+            if (cartItems.some((item) => item.quantity <= 0)) {
+                throw new Error('Invalid quantity in cart');
+            }
+
             const total = cartItems.reduce(
                 (acc, item) => acc + item.quantity * item.product.price,
-                0
+                0,
             );
 
-            // Decrease stock of purchased items
-            cartItems.forEach(async (item) => {
-                const newStock = item.product.stock - item.quantity;
-                if (newStock < 0) {
-                    throw new BadRequestException(`Not enough stock for product ${item.product.name}`);
-                }
-
-                await prisma.product.update({
-                    where: { id: item.productId },
-                    data: { stock: newStock },
-                });
+            const order = await prisma.order.create({
+                data: {
+                    userId: cart.userId,
+                    totalPrice: total,
+                    items: {
+                        create: cartItems.map((item) => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            price: item.product.price,
+                        })),
+                    },
+                },
             });
+
+            await Promise.all(
+                cartItems.map((item) => {
+                    const newStock = item.product.stock - item.quantity;
+                    if (newStock < 0) {
+                        throw new Error(`Not enough stock for product ${item.product.name}`);
+                    }
+
+                    return prisma.product.update({
+                        where: { id: item.productId },
+                        data: { stock: { decrement: item.quantity } },
+                    });
+                }),
+            );
 
             await prisma.cartItem.deleteMany({ where: { cartId } });
 
-            return total;
+            return order;
         });
     }
 }

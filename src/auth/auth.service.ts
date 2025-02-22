@@ -14,27 +14,36 @@ export class AuthService {
     ) { }
 
     async register(userDto: { username: string; email: string; password: string }): Promise<any> {
-        const { username, email, password } = userDto;
+        return await this.prisma.$transaction(async (prisma) => {
+            const { username, email, password } = userDto;
 
-        const existingEmail = await this.prisma.user.findUnique({ where: { email } });
-        const existingUsername = await this.prisma.user.findUnique({ where: { username } });
+            const existingEmail = await prisma.user.findUnique({ where: { email } });
+            const existingUsername = await prisma.user.findUnique({ where: { username } });
 
-        if (existingEmail) {
-            throw new ConflictException('Email already in use');
-        } else if (existingUsername) {
-            throw new ConflictException('Username already in use');
-        }
+            if (existingEmail) {
+                throw new ConflictException('Email already in use');
+            } else if (existingUsername) {
+                throw new ConflictException('Username already in use');
+            }
 
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
+            const salt = await bcrypt.genSalt();
+            const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = await this.prisma.user.create({
-            data: { username, email, password: hashedPassword },
+            const newUser = await prisma.user.create({
+                data: {
+                    email,
+                    username,
+                    password: hashedPassword,
+                    role: 'user',
+                },
+            });
+
+            return {
+                id: newUser.id,
+                email: newUser.email,
+                username: newUser.username,
+            };
         });
-
-        const token = this.jwtService.sign({ userId: newUser.id, email: newUser.email });
-
-        return { user: newUser, token };
     }
 
     async registerViaAuth0(externalUserDto: { email: string, provider: string }): Promise<any> {

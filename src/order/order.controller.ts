@@ -1,26 +1,25 @@
-import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
+import { AuthGuard } from '@nestjs/passport';
+import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pagination.constants';
 
+@UseGuards(AuthGuard())
 @Controller('order')
 export class OrderController {
     constructor(private readonly orderService: OrderService) { }
 
     @Get('all')
     async getAllOrders(
-        @Query('skip') skip?: number,
-        @Query('take') take?: number
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
-        if (!skip || !take) {
-            return new BadRequestException('Invalid parameters');
-        }
-
-        return await this.orderService.findAll(+skip, +take);
+        return await this.orderService.findAll(skip, take);
     }
 
     @Get(':id')
     async getOrderById(@Query('orderId') orderId: number): Promise<any> {
         if (!orderId) {
-            return new BadRequestException('Invalid parameters');
+            return new BadRequestException({ error: true, message: 'Invalid parameters' });
         }
 
         return await this.orderService.findOne(orderId);

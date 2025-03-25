@@ -20,11 +20,8 @@ export class ProductService {
         return newProduct;
     }
 
-    async getAllProducts(skip?: number, take?: number): Promise<any> {
-        return await this.prisma.product.findMany({
-            skip: skip ?? 0,
-            take: take ?? 10,
-        });
+    async getAllProducts(skip: number, take: number): Promise<any> {
+        return await this.prisma.product.findMany({ skip, take });
     }
 
     async getProductById(productId: number): Promise<any> {
@@ -58,38 +55,45 @@ export class ProductService {
 
     async getProductsByCategory(
         categoryId: number,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: { categoryId },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            skip,
+            take,
         });
     }
 
     async getProductsByPriceRange(
         minPrice: number,
         maxPrice: number,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
-            where: { price: { gte: minPrice, lte: maxPrice } },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            where: {
+                price: {
+                    gte: minPrice,
+                    lte: maxPrice,
+                },
+            },
+            skip,
+            take,
         });
     }
 
     async getProductsBySearchTerm(
         searchTerm: string,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
-            where: { name: { contains: searchTerm } },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            where: {
+                name: { contains: searchTerm },
+            },
+            skip,
+            take,
         });
     }
 
@@ -97,32 +101,35 @@ export class ProductService {
         categoryId: number,
         minPrice: number,
         maxPrice: number,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
                 categoryId,
-                price: { gte: minPrice, lte: maxPrice },
+                price: {
+                    gte: minPrice,
+                    lte: maxPrice,
+                },
             },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            skip,
+            take,
         });
     }
 
     async getProductsByCategoryAndSearchTerm(
         categoryId: number,
         searchTerm: string,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
                 categoryId,
                 name: { contains: searchTerm },
             },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            skip,
+            take,
         });
     }
 
@@ -130,16 +137,16 @@ export class ProductService {
         minPrice: number,
         maxPrice: number,
         searchTerm: string,
-        skip?: number,
-        take?: number
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
                 price: { gte: minPrice, lte: maxPrice },
                 name: { contains: searchTerm },
             },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            skip,
+            take,
         });
     }
 
@@ -148,8 +155,8 @@ export class ProductService {
         minPrice: number,
         maxPrice: number,
         searchTerm: string,
-        skip?: number,
-        take?: number,
+        skip: number,
+        take: number
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
@@ -157,8 +164,8 @@ export class ProductService {
                 price: { gte: minPrice, lte: maxPrice },
                 name: { contains: searchTerm },
             },
-            skip: skip ?? 0,
-            take: take ?? 10,
+            skip,
+            take,
         });
     }
 }

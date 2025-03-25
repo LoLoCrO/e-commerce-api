@@ -1,0 +1,2 @@
+export const DEFAULT_PAGINATION_TAKE = 10;
+export const DEFAULT_PAGINATION_SKIP = 0;

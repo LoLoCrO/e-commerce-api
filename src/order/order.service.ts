@@ -11,11 +11,8 @@ export class OrderService {
         });
     }
 
-    async findAll(take?: number, skip?: number) {
-        return this.prismaService.order.findMany({
-            take: take ?? 10,
-            skip: skip ?? 0,
-        });
+    async findAll(take: number, skip: number) {
+        return this.prismaService.order.findMany({ take, skip });
     }
 
     async findOne(id: number) {

@@ -10,6 +10,17 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@constants/*": [
+        "src/common/constants/*"
+      ],
+      "@modules/*": [
+        "src/common/modules/*"
+      ],
+      "@utils/*": [
+        "src/common/utils/*"
+      ]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pagination.constants';
 
 @Controller('product')
 export class ProductController {
@@ -22,10 +23,10 @@ export class ProductController {
 
     @Get('all')
     async getAllProducts(
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
-        return await this.productService.getAllProducts(+skip, +take);
+        return await this.productService.getAllProducts(skip, take);
     }
 
     @Get(':id')
@@ -63,8 +64,8 @@ export class ProductController {
     @Get('category/:id')
     async getProductsByCategory(
         @Param('id') categoryId: number,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!categoryId) {
             throw new BadRequestException('Invalid parameters');
@@ -77,19 +78,21 @@ export class ProductController {
     async getProductsByPriceRange(
         @Query('minPrice') minPrice: number,
         @Query('maxPrice') maxPrice: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!minPrice || !maxPrice) {
             throw new BadRequestException('Invalid parameters');
         }
 
-        return await this.productService.getProductsByPriceRange(minPrice, maxPrice);
+        return await this.productService.getProductsByPriceRange(minPrice, maxPrice, skip, take);
     }
 
     @Get('search')
     async getProductsBySearchTerm(
         @Query('searchTerm') searchTerm: string,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!searchTerm) {
             throw new BadRequestException('Invalid parameters');
@@ -103,8 +106,8 @@ export class ProductController {
         @Param('id') categoryId: number,
         @Query('minPrice') minPrice: number,
         @Query('maxPrice') maxPrice: number,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!categoryId || !minPrice || !maxPrice) {
             throw new BadRequestException('Invalid parameters');
@@ -123,8 +126,8 @@ export class ProductController {
     async getProductsByCategoryAndSearchTerm(
         @Param('id') categoryId: number,
         @Query('searchTerm') searchTerm: string,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!categoryId) {
             throw new BadRequestException('Invalid parameters');
@@ -143,8 +146,8 @@ export class ProductController {
         @Query('minPrice') minPrice: number,
         @Query('maxPrice') maxPrice: number,
         @Query('searchTerm') searchTerm: string,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!minPrice || !maxPrice) {
             throw new BadRequestException('Invalid parameters');
@@ -165,8 +168,8 @@ export class ProductController {
         @Query('minPrice') minPrice: number,
         @Query('maxPrice') maxPrice: number,
         @Query('searchTerm') searchTerm: string,
-        @Query('skip') skip?: number,
-        @Query('take') take?: number,
+        @Query('skip') skip: number = DEFAULT_PAGINATION_SKIP,
+        @Query('take') take: number = DEFAULT_PAGINATION_TAKE,
     ): Promise<any> {
         if (!categoryId || !minPrice || !maxPrice) {
             throw new BadRequestException('Invalid parameters');

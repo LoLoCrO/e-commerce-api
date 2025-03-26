@@ -3,7 +3,7 @@ import { CategoryService } from './category.service';
 
 @Controller('category')
 export class CategoryController {
-    constructor(private readonly categoryService: CategoryService) { }
+    constructor(private readonly categoryService: CategoryService) {}
 
     @Post()
     async createCategory(@Body() categoryDto: { name: string }): Promise<any> {
@@ -29,10 +29,7 @@ export class CategoryController {
     }
 
     @Post('update')
-    async updateCategory(
-        categoryId: number,
-        categoryDto: { name: string }
-    ): Promise<any> {
+    async updateCategory(categoryId: number, categoryDto: { name: string }): Promise<any> {
         if (!categoryDto.name) {
             return new BadRequestException('Invalid parameters');
         }

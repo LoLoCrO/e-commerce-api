@@ -12,9 +12,8 @@ import { OrderModule } from './order/order.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, ProductModule, CategoryModule, CartModule, OrderModule, UserModule],
-  controllers: [AppController, CartController],
-  providers: [AppService, CartService],
+    imports: [AuthModule, PrismaModule, ProductModule, CategoryModule, CartModule, OrderModule, UserModule],
+    controllers: [AppController, CartController],
+    providers: [AppService, CartService],
 })
-
-export class AppModule { }
+export class AppModule {}

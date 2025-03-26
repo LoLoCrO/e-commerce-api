@@ -20,4 +20,4 @@ import { AuthController } from './auth.controller';
     providers: [AuthService, PrismaService, JwtStrategy],
     exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

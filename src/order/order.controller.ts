@@ -6,7 +6,7 @@ import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pag
 @UseGuards(AuthGuard())
 @Controller('order')
 export class OrderController {
-    constructor(private readonly orderService: OrderService) { }
+    constructor(private readonly orderService: OrderService) {}
 
     @Get('all')
     async getAllOrders(
@@ -19,7 +19,10 @@ export class OrderController {
     @Get(':id')
     async getOrderById(@Query('orderId') orderId: number): Promise<any> {
         if (!orderId) {
-            return new BadRequestException({ error: true, message: 'Invalid parameters' });
+            return new BadRequestException({
+                error: true,
+                message: 'Invalid parameters',
+            });
         }
 
         return await this.orderService.findOne(orderId);
@@ -38,18 +41,20 @@ export class OrderController {
 
     @Post('update')
     async updateOrder(
-        @Body() orderDto: {
-            orderId: number,
-            userId?: number,
-            status?: string,
-            totalPrice?: number,
-            paymentId?: string,
-        }): Promise<any> {
+        @Body()
+        orderDto: {
+            orderId: number;
+            userId?: number;
+            status?: string;
+            totalPrice?: number;
+            paymentId?: string;
+        },
+    ): Promise<any> {
         if (!orderDto.orderId) {
             return new BadRequestException('Invalid parameters');
         }
 
-        const keys = Object.keys(orderDto).filter(key => key !== 'orderId');
+        const keys = Object.keys(orderDto).filter((key) => key !== 'orderId');
         if (keys.length === 0) {
             throw new BadRequestException('No properties to update');
         }

@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CartService {
-    constructor(private readonly prismaService: PrismaService) { }
+    constructor(private readonly prismaService: PrismaService) {}
 
     async createCart(cartDto: { userId: number }): Promise<any> {
         const { userId } = cartDto;
@@ -38,11 +38,7 @@ export class CartService {
         return await this.prismaService.cart.delete({ where: { id: cartId } });
     }
 
-    async addItemToCart(
-        cartId: number,
-        productId: number,
-        quantity: number
-    ): Promise<any> {
+    async addItemToCart(cartId: number, productId: number, quantity: number): Promise<any> {
         const cart = await this.prismaService.cart.findUnique({
             where: { id: cartId },
             include: { items: true },
@@ -56,9 +52,7 @@ export class CartService {
             return null;
         }
 
-        const existingProduct = cart.items.find(
-            (product) => product.productId === productId
-        );
+        const existingProduct = cart.items.find((product) => product.productId === productId);
 
         if (existingProduct) {
             const updatedProduct = await this.prismaService.cartItem.update({
@@ -86,11 +80,7 @@ export class CartService {
         });
     }
 
-    async updateItemQuantity(
-        cartId: number,
-        productId: number,
-        quantity: number
-    ): Promise<any> {
+    async updateItemQuantity(cartId: number, productId: number, quantity: number): Promise<any> {
         if (quantity <= 0) {
             return this.removeItemFromCart(cartId, productId);
         }
@@ -104,9 +94,7 @@ export class CartService {
             return null;
         }
 
-        const existingProduct = cart.items.find(
-            (product) => product.productId === productId
-        );
+        const existingProduct = cart.items.find((product) => product.productId === productId);
 
         if (!existingProduct) {
             return null;
@@ -155,10 +143,7 @@ export class CartService {
                 throw new Error('Invalid quantity in cart');
             }
 
-            const total = cartItems.reduce(
-                (acc, item) => acc + item.quantity * item.product.price,
-                0,
-            );
+            const total = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
 
             const order = await prisma.order.create({
                 data: {

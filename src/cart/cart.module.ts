@@ -7,5 +7,4 @@ import { CartService } from './cart.service';
     providers: [PrismaService, CartService],
     controllers: [CartController],
 })
-
 export class CartModule {}

@@ -11,14 +11,16 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly prisma: PrismaService,
         private readonly httpService: HttpService,
-    ) { }
+    ) {}
 
     async register(userDto: { username: string; email: string; password: string }): Promise<any> {
         return await this.prisma.$transaction(async (prisma) => {
             const { username, email, password } = userDto;
 
             const existingEmail = await prisma.user.findUnique({ where: { email } });
-            const existingUsername = await prisma.user.findUnique({ where: { username } });
+            const existingUsername = await prisma.user.findUnique({
+                where: { username },
+            });
 
             if (existingEmail) {
                 throw new ConflictException('Email already in use');
@@ -46,7 +48,7 @@ export class AuthService {
         });
     }
 
-    async registerViaAuth0(externalUserDto: { email: string, provider: string }): Promise<any> {
+    async registerViaAuth0(externalUserDto: { email: string; provider: string }): Promise<any> {
         const { email, provider } = externalUserDto;
 
         const response = await firstValueFrom(
@@ -85,14 +87,18 @@ export class AuthService {
 
     async validateUser(username: string, password: string): Promise<any> {
         const user = await this.prisma.user.findUnique({ where: { username } });
-        if (user && await bcrypt.compare(password, user.password)) {
+        if (user && (await bcrypt.compare(password, user.password))) {
             return { userId: user.id, username: user.username, role: user.role };
         }
         return null;
     }
 
     async generateToken(user: any): Promise<string> {
-        const payload = { username: user.username, sub: user.userId, roles: user.roles };
+        const payload = {
+            username: user.username,
+            sub: user.userId,
+            roles: user.roles,
+        };
         return this.jwtService.sign(payload);
     }
 

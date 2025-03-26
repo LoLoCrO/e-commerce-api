@@ -3,14 +3,9 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ProductService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService) {}
 
-    async createProduct(productDto: {
-        name: string,
-        price: number,
-        description: string,
-        stock: number
-    }): Promise<any> {
+    async createProduct(productDto: { name: string; price: number; description: string; stock: number }): Promise<any> {
         const { name, price, description, stock } = productDto;
 
         const newProduct = await this.prisma.product.create({
@@ -28,13 +23,15 @@ export class ProductService {
         return await this.prisma.product.findUnique({ where: { id: productId } });
     }
 
-    async updateProduct(productId: number,
+    async updateProduct(
+        productId: number,
         productDto: {
-            name?: string,
-            price?: number,
-            description?: string,
-            stock?: number
-        }): Promise<any> {
+            name?: string;
+            price?: number;
+            description?: string;
+            stock?: number;
+        },
+    ): Promise<any> {
         const { name, price, description, stock } = productDto;
 
         await this.prisma.$transaction(async (prisma) => {
@@ -53,11 +50,7 @@ export class ProductService {
         });
     }
 
-    async getProductsByCategory(
-        categoryId: number,
-        skip: number,
-        take: number
-    ): Promise<any> {
+    async getProductsByCategory(categoryId: number, skip: number, take: number): Promise<any> {
         return await this.prisma.product.findMany({
             where: { categoryId },
             skip,
@@ -65,12 +58,7 @@ export class ProductService {
         });
     }
 
-    async getProductsByPriceRange(
-        minPrice: number,
-        maxPrice: number,
-        skip: number,
-        take: number
-    ): Promise<any> {
+    async getProductsByPriceRange(minPrice: number, maxPrice: number, skip: number, take: number): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
                 price: {
@@ -83,11 +71,7 @@ export class ProductService {
         });
     }
 
-    async getProductsBySearchTerm(
-        searchTerm: string,
-        skip: number,
-        take: number
-    ): Promise<any> {
+    async getProductsBySearchTerm(searchTerm: string, skip: number, take: number): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
                 name: { contains: searchTerm },
@@ -102,7 +86,7 @@ export class ProductService {
         minPrice: number,
         maxPrice: number,
         skip: number,
-        take: number
+        take: number,
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
@@ -121,7 +105,7 @@ export class ProductService {
         categoryId: number,
         searchTerm: string,
         skip: number,
-        take: number
+        take: number,
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
@@ -138,7 +122,7 @@ export class ProductService {
         maxPrice: number,
         searchTerm: string,
         skip: number,
-        take: number
+        take: number,
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {
@@ -156,7 +140,7 @@ export class ProductService {
         maxPrice: number,
         searchTerm: string,
         skip: number,
-        take: number
+        take: number,
     ): Promise<any> {
         return await this.prisma.product.findMany({
             where: {

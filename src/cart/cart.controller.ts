@@ -3,7 +3,7 @@ import { CartService } from './cart.service';
 
 @Controller('cart')
 export class CartController {
-    constructor(private readonly cartService: CartService) { }
+    constructor(private readonly cartService: CartService) {}
 
     @Post()
     async createCart(@Body() cartDto: { userId: number }): Promise<any> {
@@ -17,9 +17,7 @@ export class CartController {
     }
 
     @Post('update')
-    async updateCart(
-        @Body() cartDto: { cartId: number, userId: number }
-    ): Promise<any> {
+    async updateCart(@Body() cartDto: { cartId: number; userId: number }): Promise<any> {
         const { cartId, userId } = cartDto;
 
         if (!cartId || !userId) {
@@ -42,7 +40,12 @@ export class CartController {
 
     @Post('add-item')
     async addItemToCart(
-        @Body() cartItemDto: { cartId: number, productId: number, quantity: number }
+        @Body()
+        cartItemDto: {
+            cartId: number;
+            productId: number;
+            quantity: number;
+        },
     ): Promise<any> {
         const { cartId, productId, quantity } = cartItemDto;
 
@@ -54,9 +57,7 @@ export class CartController {
     }
 
     @Post('remove-item')
-    async removeItemFromCart(
-        @Body() cartItemDto: { cartId: number, productId: number }
-    ): Promise<any> {
+    async removeItemFromCart(@Body() cartItemDto: { cartId: number; productId: number }): Promise<any> {
         const { cartId, productId } = cartItemDto;
 
         if (!cartId || !productId) {

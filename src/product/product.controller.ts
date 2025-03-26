@@ -4,16 +4,18 @@ import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pag
 
 @Controller('product')
 export class ProductController {
-    constructor(private readonly productService: ProductService) { }
+    constructor(private readonly productService: ProductService) {}
 
     @Post()
     async createProduct(
-        @Body() productDto: {
-            name: string,
-            price: number,
-            description: string,
-            stock: number,
-        }): Promise<any> {
+        @Body()
+        productDto: {
+            name: string;
+            price: number;
+            description: string;
+            stock: number;
+        },
+    ): Promise<any> {
         if (Object.keys(productDto).length !== 4) {
             throw new BadRequestException('Invalid parameters');
         }
@@ -39,12 +41,15 @@ export class ProductController {
     }
 
     @Post('update')
-    async updateProduct(productId: number, productDto: {
-        name?: string;
-        price?: number;
-        description?: string;
-        stock?: number
-    }): Promise<any> {
+    async updateProduct(
+        productId: number,
+        productDto: {
+            name?: string;
+            price?: number;
+            description?: string;
+            stock?: number;
+        },
+    ): Promise<any> {
         if (!Object.keys(productDto).length) {
             throw new BadRequestException('Invalid parameters');
         }
@@ -113,13 +118,7 @@ export class ProductController {
             throw new BadRequestException('Invalid parameters');
         }
 
-        return await this.productService.getProductsByCategoryAndPriceRange(
-            categoryId,
-            minPrice,
-            maxPrice,
-            skip,
-            take
-        );
+        return await this.productService.getProductsByCategoryAndPriceRange(categoryId, minPrice, maxPrice, skip, take);
     }
 
     @Get('category/:id/search')
@@ -133,12 +132,7 @@ export class ProductController {
             throw new BadRequestException('Invalid parameters');
         }
 
-        return await this.productService.getProductsByCategoryAndSearchTerm(
-            categoryId,
-            searchTerm,
-            skip,
-            take
-        );
+        return await this.productService.getProductsByCategoryAndSearchTerm(categoryId, searchTerm, skip, take);
     }
 
     @Get('priceRange/search')
@@ -158,7 +152,7 @@ export class ProductController {
             maxPrice,
             searchTerm,
             skip,
-            take
+            take,
         );
     }
 
@@ -181,7 +175,7 @@ export class ProductController {
             maxPrice,
             searchTerm,
             skip,
-            take
+            take,
         );
     }
 }

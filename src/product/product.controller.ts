@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pagination.constants';
 
@@ -6,7 +6,7 @@ import { DEFAULT_PAGINATION_SKIP, DEFAULT_PAGINATION_TAKE } from '@constants/pag
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
-    @Post()
+    @Post('create')
     async createProduct(
         @Body()
         productDto: {
@@ -14,6 +14,7 @@ export class ProductController {
             price: number;
             description: string;
             stock: number;
+            categoryId: number;
         },
     ): Promise<any> {
         if (Object.keys(productDto).length !== 4) {
@@ -40,14 +41,16 @@ export class ProductController {
         return await this.productService.getProductById(productId);
     }
 
-    @Post('update')
+    @Post('update/:id')
     async updateProduct(
-        productId: number,
+        @Param('id', ParseIntPipe) productId: number,
+        @Body()
         productDto: {
             name?: string;
             price?: number;
             description?: string;
             stock?: number;
+            categoryId?: number;
         },
     ): Promise<any> {
         if (!Object.keys(productDto).length) {

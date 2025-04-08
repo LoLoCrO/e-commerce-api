@@ -30,14 +30,15 @@ export class ProductService {
             price?: number;
             description?: string;
             stock?: number;
+            categoryId?: number;
         },
     ): Promise<any> {
-        const { name, price, description, stock } = productDto;
+        const { name, price, description, stock, categoryId } = productDto;
 
         await this.prisma.$transaction(async (prisma) => {
             const updatedProduct = await prisma.product.update({
                 where: { id: productId },
-                data: { name, price, description, stock },
+                data: { name, price, description, stock, categoryId },
             });
 
             return updatedProduct;

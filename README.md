@@ -31,7 +31,8 @@
 $ docker build -t e-commerce-api .
 ```
 ```bash
-docker run --env-file .env -p 3000:3000 -v $(pwd):/app/backend e-commerce-api
+# run dev mode
+docker run -it --rm --name e-commerce-api-dev --env-file .env -p 3000:3000 -v $(pwd):/app/backend e-commerce-api
 ```
 
 ## Compile and run the project

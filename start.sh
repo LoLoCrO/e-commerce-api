@@ -1,3 +1,6 @@
-exec yarn start:dev
-exec yarn
-exec yarn prisma gemerate
+#!/bin/bash
+set -e
+
+yarn
+yarn prisma generate
+yarn start:dev

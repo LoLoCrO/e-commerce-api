@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: e-commerce-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app/backend
+    environment:
+      - NODE_ENV=development
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    volumes:
+      - ~/.config/stripe:/root/.config/stripe
+    container_name: stripe-cli
+    depends_on:
+      - api
+    environment:
+      STRIPE_API_KEY: ${STRIPE_API_KEY}
+      STRIPE_DEVICE_NAME: ${STRIPE_DEVICE_NAME}
+    command: listen --forward-to api:3000/webhook

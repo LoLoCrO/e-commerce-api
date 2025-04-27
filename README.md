@@ -5,6 +5,12 @@
 3. Create a profile on Auth0 and copy your matching keys to Auth0 keys in .env 
 4. Create a profile on Stripe and copy paste the secret key to `STRIPE_API_KEY` in .env
 
+# Stripe setup
+```bash
+# Using Stripe CLI Inside Docker
+docker run --rm -it stripe/stripe-cli
+```
+
 ## Project setup
 ```bash
 $ docker build -t e-commerce-api .

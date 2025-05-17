@@ -81,14 +81,21 @@ export class AuthService {
         }
 
         const token = this.jwtService.sign({ userId: user.id, email: user.email });
-
+        console.log(`Generated token for user ${user.username}: ${token}`);
         return { user, token };
     }
 
-    async validateUser(username: string, password: string): Promise<any> {
-        const user = await this.prisma.user.findUnique({ where: { username } });
+    async validateUser(identifier: string, password: string): Promise<any> {
+        const isEmail = identifier.includes('@');
+        const whereClause = isEmail ? { email: identifier } : { username: identifier };
+        const user = await this.prisma.user.findUnique({ where: whereClause });
         if (user && (await bcrypt.compare(password, user.password))) {
-            return { userId: user.id, username: user.username, role: user.role };
+            return {
+                userId: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role
+            };
         }
         return null;
     }

@@ -30,8 +30,15 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: { username: string; password: string }, @Res({ passthrough: true }) res: Response) {
-        const user = await this.authService.validateUser(body.username, body.password);
+    async login(
+        @Body() body: { username?: string; email?: string; password: string },
+        @Res({ passthrough: true }) res: Response
+    ) {
+        if (!body.username && !body.email) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
+        const user = await this.authService.validateUser(body.username || body.email, body.password);
 
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
